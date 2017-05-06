@@ -1,2 +1,2 @@
 # powershell
-powershell fund
+powershell fun. will add posh scripts I complete.
