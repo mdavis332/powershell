@@ -2,10 +2,13 @@ function CryptoBlocker
 {
   
   # Email Sever Settings
-  $SMTPServer = "mail.org.local"
-  $SMTPFrom = "$env:COMPUTERNAME@org.local"
-  $SMTPTo = "support@org.local"
-  $AdminEmail = "support@org.local"
+  $SMTPServer = "YOURSMTPSERVER"
+  $SMTPFrom = "$env:COMPUTERNAME@YOURDOMAINNAME"
+  $SMTPTo = "Admin@YOURDOMAINNAME"
+  $AdminEmail = "Admin@YOURDOMAINNAME"
+  
+  # Get Ransomware Known File Types
+  $CryptoExtensions = (Invoke-WebRequest -Uri "https://fsrm.experiant.ca/api/v1/get" -UseBasicParsing).content | convertfrom-json | % {$_.filters}
   
   # Import Server Manager PS Module
   Import-Module ServerManager
@@ -22,10 +25,7 @@ function CryptoBlocker
     # Set FSRM Email Settings
     Set-FSRMSetting -AdminEmailAddress $AdminEmail -SMTPServer $SMTPServer -FromEmailAddress $SMTPFrom
     
-    # Define Ransomware Known File Types
-    $CryptoExtensions = (Invoke-WebRequest -Uri "https://fsrm.experiant.ca/api/v1/get" -UseBasicParsing).content | convertfrom-json | % {$_.filters}
-    
-    # Create FSRM File Group 
+    # Create FSRM File Group
     New-FSRMFileGroup -name "CryptoExtensions" -IncludePattern $CryptoExtensions -Description "Crypto Extension Detection" | Out-Null
     
     # Set FRSM Notification Message & Scan Interval
@@ -44,6 +44,28 @@ function CryptoBlocker
     }
   }
   
+  # Update Cyrpto File Extensions 
+  if ((Get-FSRMFileScreen).Description -contains "Crypto Extension Monitoring")
+  {
+    # Create Array For File Extensions
+    $CryptoExtensionsUpdate = New-Object -TypeName System.Collections.ArrayList
+    
+    # Get Known Extensions
+    $KnownExtensions = Get-FSRMFileGroup -Name CryptoExtensions | select -ExpandProperty IncludePattern
+    
+    # Add Known Extensions To $CryptoExtensions Array
+    foreach ($Extension in $CryptoExtensions)
+    {
+      If ($Extension -notin $KnownExtensions)
+      {
+        $CryptoExtensionsUpdate.Add($Extension) | Out-Null
+      }
+    }
+    
+    # Update File Screen
+    Set-FSRMFileGroup -Name CryptoExtensions -IncludePattern $CryptoExtensionsUpdate | Out-Null
+  }
+  
   # Check for FSRM File Screen
   $CryptoScreen = Get-FSRMFileScreen | Where-Object { $_.Description -eq "Crypto Extension Monitoring" }
   
@@ -57,5 +79,4 @@ function CryptoBlocker
   }
   Return $CryptoCICompliant
 }
-
 CryptoBlocker
