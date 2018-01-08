@@ -64,6 +64,11 @@ function CryptoBlocker
     
     # Update File Screen
     Set-FSRMFileGroup -Name CryptoExtensions -IncludePattern $CryptoExtensionsUpdate | Out-Null
+
+    # Add manual excludes
+    $CryptoExtensionsToExclude = "*.one", "*.info", "*.0000" #used for OneNote, WinDefender, and SxS files
+    Set-FSRMFileGroup -Name CryptoExtensions -ExcludePattern $CryptoExtensionsToExclude | Out-Null
+
   }
   
   # Check for FSRM File Screen
