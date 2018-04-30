@@ -25,7 +25,7 @@ $AppsList = "9E2F88E3.Twitter",							# Remove
 			"Microsoft.MicrosoftSolitaireCollection",	# Remove
 			"Microsoft.MicrosoftStickyNotes",			# Remove
 			#"Microsoft.MSPaint",						Keep
-			"Microsoft.Office.OneNote",					# Remove
+			#"Microsoft.Office.OneNote",				Keep since MS has announced they're killing Win32 OneNote
 			"Microsoft.OneConnect",						# Remove
 			"Microsoft.People",							# Remove
 			"Microsoft.SkypeApp",						# Remove
