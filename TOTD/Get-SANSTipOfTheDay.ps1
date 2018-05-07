@@ -26,12 +26,16 @@ param (
     [string]$Guid
 )
 
+# support https (TLS)
+$AllProtocols = [System.Net.SecurityProtocolType]'Tls11,Tls12'
+[System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
+
 # uri of Sans TOTD
 $uri = 'https://www.sans.org/tip-of-the-day'
 $page = Invoke-WebRequest $uri
 
 # find the HTML Div that matches 'well' in which the TOTD text is stored, then save the text
-$TipOfTheDayRaw = $page.AllElements | Where { $_.Class -eq 'well' } | Select -ExpandProperty InnerText
+$TipOfTheDayRaw = $page.AllElements | Where-Object { $_.Class -eq 'well' } | Select-Object -ExpandProperty InnerText
 
 $TipOfTheDay = $null
 
