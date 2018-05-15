@@ -9,42 +9,38 @@
    ./Remove-Win10-ProvisionedApps.ps1
 #>
 
-$AppsList = 		"9E2F88E3.Twitter",					# Remove
-			"king.com.candycrushsodasaga",				# Remove
-			#"Microsoft.3DBuilder",					# No longer included as of 1709
-			"Microsoft.BingWeather",				# Remove
-			#"Microsoft.DesktopAppInstaller",			Keep
+$AppsList = "Microsoft.BingWeather",				# Remove
+			#"Microsoft.DesktopAppInstaller",		Keep
 			"Microsoft.GetHelp",					# Remove - Introduced in 1709
 			"Microsoft.Getstarted",					# Remove
 			"Microsoft.Messaging",					# Remove			
-			#"Microsoft.Microsoft3DViwer",				Keep - Introduced in 1703
-			"Microsoft.MicrosoftOfficeHub",				# Remove
+			#"Microsoft.Microsoft3DViwer",			Keep - Introduced in 1703
+			"Microsoft.MicrosoftOfficeHub",			# Remove
 			"Microsoft.MicrosoftSolitaireCollection",		# Remove
-			"Microsoft.MicrosoftStickyNotes",			# Remove
+			"Microsoft.MicrosoftStickyNotes",		# Remove
 			#"Microsoft.MSPaint",					Keep
-			#"Microsoft.Office.OneNote",				Keep since MS has announced they're killing Win32 OneNote
+			#"Microsoft.Office.OneNote",			Keep since MS has announced they're killing Win32 OneNote
 			"Microsoft.OneConnect",					# Remove
-			"Microsoft.People",					# Remove
-			Microsoft.Print3D,					# Remove - Introduced in 1709
+			"Microsoft.People",						# Remove
+			"Microsoft.Print3D",					# Remove - Introduced in 1709
 			"Microsoft.SkypeApp",					# Remove
-			#"Microsoft.StorePurchaseApp",				Keep
-			"Microsoft.Wallet",					# Remove
-			#"Microsoft.WebMediaExtensions",			Keep - Introduced in 1803
-			#"Microsoft.Windows.Photos",				Keep
+			#"Microsoft.StorePurchaseApp",			Keep
+			"Microsoft.Wallet",						# Remove
+			#"Microsoft.WebMediaExtensions",		Keep - Introduced in 1803
+			#"Microsoft.Windows.Photos",			Keep
 			"Microsoft.WindowsAlarms",				# Remove
-			#"Microsoft.WindowsCalculator",				Keep
+			#"Microsoft.WindowsCalculator",			Keep
 			"Microsoft.WindowsCamera",				# Remove 
-			"microsoft.windowscommunicationsapps",			# Remove
-			"Microsoft.WindowsFeedbackHub",				# Remove
+			"microsoft.windowscommunicationsapps",	# Remove
+			"Microsoft.WindowsFeedbackHub",			# Remove
 			"Microsoft.WindowsMaps",				# Remove
-			"Microsoft.Windows.ParentalControls",			# Remove
-			"Microsoft.WindowsSoundRecorder",			# Remove
+			"Microsoft.WindowsSoundRecorder",		# Remove
 			#"Microsoft.WindowsStore",				Keep
 			"Microsoft.XboxApp",					# Remove
-			"Microsoft.XboxGameOverlay",				# Remove
-			"Microsoft.XboxGamingOverlay",				# Remove - Introduced in 1803
-			"Microsoft.XboxIdentityProvider",			# Remove
-			"Microsoft.XboxSpeechToTextOverlay",			# Remove
+			"Microsoft.XboxGameOverlay",			# Remove
+			"Microsoft.XboxGamingOverlay",			# Remove - Introduced in 1803
+			"Microsoft.XboxIdentityProvider",		# Remove
+			"Microsoft.XboxSpeechToTextOverlay",	# Remove
 			"Microsoft.Xbox.TCUI",					# Remove
 			"Microsoft.ZuneMusic",					# Remove
 			"Microsoft.ZuneVideo"					# Remove
