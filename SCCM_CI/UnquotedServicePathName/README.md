@@ -5,4 +5,6 @@ Services set to Automatic startup type with unquoted pathNames (e.g.: C:\Program
 actors and, if discovered, can be disrupted by placing a malicious executable in the path (e.g., C:\Program.exe) that would be executed 
 instead of the service due to the way Windows handles binary path execution.
 
+See more info here: https://pentest.blog/windows-privilege-escalation-methods-for-pentesters/
+
 The remediation script attempts to add double-quotes around unquoted path names it finds to get the machine back into compliance.
