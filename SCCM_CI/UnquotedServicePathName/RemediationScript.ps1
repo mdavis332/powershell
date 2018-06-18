@@ -2,6 +2,9 @@
 $Filter = "StartMode = 'Auto' AND NOT PathName LIKE 'C:\\Windows%' AND NOT PathName LIKE '`"%'"
 $NeedsQuotes = Get-CimInstance -ClassName Win32_Service -Filter $Filter
 
+# Write out current paths as a backout plan in case automation breaks anything
+$NeedsQuotes.PathName | Add-Content "$env:temp\UnquotedServicePaths.txt"
+
 # Wrap double quotes around the PathName
 foreach ($Item in $NeedsQuotes) {
     # if there is a path with arguments, it may show up here due to the space before the args, so split after a file ext
