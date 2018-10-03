@@ -32,7 +32,8 @@ Function Rename-PaperCutUser {
     )
 
     # Requires PowerShell v4 or higher
-
+    # Use Tls 1.2
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
     # Import PaperCut Management module from https://github.com/robp2175/PapercutManagementModule
     Import-Module "\\path\to\PapercutManagementModule\PapercutManagement\bin\Release\PapercutManagement.dll"
 
