@@ -58,11 +58,18 @@ $PaCertParams = @{
     PluginArgs = $DMEParams
     DnsAlias   = "_acme-challenge.${Hostname}.${DnsAliasSite}"
 }
-$CertReturn = New-PACertificate $Fqdn @PaCertParams -DirectoryUrl LE_PROD #change LE_PROD to LE_STAGE for any script testing
+
+try {
+    $CertReturn = New-PACertificate $Fqdn @PaCertParams -DirectoryUrl LE_PROD #change LE_PROD to LE_STAGE for any script testing
+}
+catch {
+    #TODO: Email someone $_.Exception.ErrorMessage
+    throw
+}
+
 
 if (-not $CertReturn) {
-    Write-Error "Didn't return correct response from LetsEncrypt API"
-    #TODO: Email someone
+    Write-Verbose "Not time to renew or didn't get correct response from LetsEncrypt API"
     Exit
 }
 
