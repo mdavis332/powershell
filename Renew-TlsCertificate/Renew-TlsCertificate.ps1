@@ -29,7 +29,7 @@ $ServicesToRestart = @(
 ################################################################>
 
 # Add module for Posh-ACME
-if (-not (Get-Module Posh-ACME) -and -not (Get-Module $PoshAcmePath)) {
+if (-not (Get-Module Posh-ACME)) {
     Import-Module $PoshAcmePath
 }
 
