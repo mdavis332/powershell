@@ -6,7 +6,8 @@ Author: Michael Davis
 Last Date Modified: 2018-October-03
 TODO: Error Handling everywhere
 #>
-
+[cmdletbinding()]
+$VerbosePreference = 'Continue'
 #region configuration
 $Fqdn = 'printserver.domain.com' # fqdn of the server
 $KeystorePass = 'Mycoolkeystore-pass22' # java keystore password
@@ -27,24 +28,31 @@ $ServicesToRestart = @(
 <################################################################
 # Don't Edit anything below this line unless you know what's up #
 ################################################################>
-
+Write-Verbose "Starting renewal check at $((Get-Date -format 'yyyy-MM-dd hh:mm:ss').ToString())"
 # Add module for Posh-ACME
 if (-not (Get-Module Posh-ACME)) {
     Import-Module $PoshAcmePath
 }
 
 # read in DNS API Keys
-if (-not (Get-Item -Path Env:Dns_ApiKey -ErrorAction SilentlyContinue)) {
-    Read-Host "Enter the DNS API Key (will be saved as env variable for subsequent runs)" | Set-Item -Path Env:Dns_ApiKey
+if (-not ([System.Environment]::GetEnvironmentVariable('Dns_ApiKey', 'Machine'))) {
+    $ApiKey = Read-Host 'Enter the DNS API Key (will be saved as env variable for subsequent runs)'
+    [Environment]::SetEnvironmentVariable('Dns_ApiKey', $ApiKey, 'Machine')
 }
 
-if (-not (Get-Item -Path Env:Dns_SecretKey -ErrorAction SilentlyContinue)) {
-    Read-Host "Enter the DNS Secret Key (only needs to be done on the first run)" -AsSecureString | ConvertFrom-SecureString | 
-        Set-Item -Path Env:Dns_SecretKey
+# Prepare to read in SecretKey and save an encryption key to a file so we can decrypt the secretkey across users on this same machine
+$KeyFile = "$PSScriptRoot\CertRenewalAES.key"
+if (-not ([System.Environment]::GetEnvironmentVariable('Dns_SecretKey', 'Machine'))) {
+    $Key = New-Object Byte[] 32
+    [Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($Key)
+    $Key | Out-File $KeyFile
+    $SecretKey = Read-Host 'Enter the DNS Secret Key (only needs to be done on the first run)' -AsSecureString | ConvertFrom-SecureString -Key $Key
+    [Environment]::SetEnvironmentVariable('Dns_SecretKey', $SecretKey, 'Machine')
 }
 
-$DMEKey = Get-Item -Path Env:Dns_ApiKey
-$DMESecret = Get-Item -Path Env:Dns_SecretKey | Select-Object -ExpandProperty Value | ConvertTo-SecureString
+$DMEKey = [System.Environment]::GetEnvironmentVariable('Dns_ApiKey', 'Machine')
+$Key = Get-Content $KeyFile
+$DMESecret = [System.Environment]::GetEnvironmentVariable('Dns_SecretKey', 'Machine') | ConvertTo-SecureString -Key $Key
 
 $DMEParams = @{DMEKey = $DMEKey.Value; DMESecret = $DMESecret}
 
@@ -70,6 +78,7 @@ catch {
 
 if (-not $CertReturn) {
     Write-Verbose "Not time to renew or didn't get correct response from LetsEncrypt API"
+    Write-Verbose "Finishing renewal check at $((Get-Date -format 'yyyy-MM-dd hh:mm:ss').ToString())"
     Exit
 }
 
@@ -97,3 +106,4 @@ Move-Item -Path "$MobilityPrintPath\tls.cer" -Destination "$MobilityPrintPath\tl
 
 # Restart Services
 $ServicesToRestart | Restart-Service -Force
+Write-Verbose "Finishing renewal check at $((Get-Date -format 'yyyy-MM-dd hh:mm:ss').ToString())"
