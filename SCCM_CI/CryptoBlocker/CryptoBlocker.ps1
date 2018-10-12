@@ -66,7 +66,7 @@ function CryptoBlocker
     Set-FSRMFileGroup -Name CryptoExtensions -IncludePattern $CryptoExtensionsUpdate | Out-Null
 
     # Add manual excludes
-    $CryptoExtensionsToExclude = "*.one", "*.info", "*.0000" #used for OneNote, WinDefender, and SxS files
+    $CryptoExtensionsToExclude = "*.one", "*.info", "*.0000", '*.rat', "*.aes", "*.enc", "*.lin", "*.test", "*.dot", "*.xxx", "*.fun", "oor.png", "*restore_fi*.*", "*.backup" #used for OneNote, WinDefender, SxS, BackupExec, Chrome, and AutoDesk files
     Set-FSRMFileGroup -Name CryptoExtensions -ExcludePattern $CryptoExtensionsToExclude | Out-Null
 
   }
