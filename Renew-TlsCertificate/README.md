@@ -7,3 +7,5 @@ Use with a Scheduled Task that runs daily with the following action:
 Program/script: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
 Arguments: -noninteractive -noprofile -command "powershell -noninter -nop -c C:\scripts\Renew-TlsCertificate.ps1 > c:\scripts\certrenew.log 2>&1"
 STart in: C:\Scripts
+
+I have been unsuccessful in getting this to run as SYSTEM on a scheduled task, so I created a local user, gave it the appropriate permissions to respective folders, and ran it as that local user account. You must interactively logon as that user to the Server at least once before the script will successfully run.
