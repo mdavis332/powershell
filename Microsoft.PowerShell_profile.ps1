@@ -60,3 +60,4 @@ cd c:\
 
 Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
+Set-PSReadLineOption –HistoryNoDuplicates -ShowToolTips
