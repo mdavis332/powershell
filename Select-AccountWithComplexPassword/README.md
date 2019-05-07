@@ -17,4 +17,6 @@ Select-AccountWithComplexPassword -AccountPasswordPair 'username1@domain.tld|Tes
 
 Select-AccountWithComplexPassword -AccountPasswordPair (Get-Content ./FileWithManyPairsOnePerLine.txt)
 
+Select-AccountWithComplexPassword -AccountPasswordPair (Get-Content ./FileWithManyPairsOnePerLine.txt) | Out-File ./Pruned.txt
+
 ```
