@@ -44,17 +44,18 @@ function Test-PasswordComplexity {
 # username3:reallylongpasswordwithnospecialcharacters
 function Select-AccountWithComplexPassword {
     param (
-        [Parameter(Mandatory=$false)][string]$Delimeter = ':',
-        [Parameter(Mandatory=$true)][string[]]$AccountPasswordPair
+        [Parameter(Mandatory = $false)][string]$Delimeter = ':',
+        [Parameter(Mandatory = $true)][string[]]$AccountPasswordPair
     )
 
-        
-    $AccountPasswordPair | ForEach-Object { $AccoutName, $Password = $_.split($Delimeter,2); 
+    # Split on the delimiter 3 times in case there's a trailing delimiter at the end of the password    
+    $AccountPasswordPair | ForEach-Object { $AccountName, $Password, $Unused = $_.split($Delimeter, 3); 
         try {
-            if (Test-PasswordComplexity -AccountName $AccoutName -Password $Password) { 
-                Write-Output $_ 
+            if (Test-PasswordComplexity -AccountName $AccountName.trim() -Password $Password.trim()) { 
+                Write-Output ${AccountName}:${Password}
             } 
-        } catch [System.Management.Automation.ParameterBindingException] {
+        }
+        catch [System.Management.Automation.ParameterBindingException] {
             Write-Error 'Did you provide an incorrect delimiter?'
             Write-Error $_
         }
