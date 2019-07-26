@@ -63,7 +63,7 @@ Set-PSReadLineOption -HistoryNoDuplicates -ShowToolTips
 # otherwise, return false
 function Test-PasswordComplexity {
     param (
-        [Parameter(Mandatory = $false)][string]$AccountName = "",
+        [Parameter(Mandatory = $false)][string]$AccountName = '',
         [Parameter(Mandatory = $true)][string]$Password
     )
 
@@ -71,7 +71,7 @@ function Test-PasswordComplexity {
         return $false
     }
 
-    if (($Account) -and $Password -match $AccountName) {
+    if (($AccountName) -and ($AccountName -match $Password)) {
         return $false
     }
 
@@ -106,6 +106,14 @@ function Select-AccountWithComplexPassword {
         [Parameter(Mandatory = $false)][string]$Delimeter = ':',
         [Parameter(Mandatory = $true)][string[]]$AccountPasswordPair
     )
+	
+	# define regex to match an email address followed by a delimiter, then a password, before another delimiter
+	# we do this so if we read in a line filled with other content, we can narrow to just the email addr/password
+	[regex]$regex = "(([a-zA-Z0-9\.\-_]+@(?:[a-zA-Z0-9\.\-_]+))(?:(?:([${Delimeter}])(.+?(?=\3|\s|$)))))"
+	$result = $AccountPasswordPair | Select-String -Pattern $regex -AllMatches
+	$CredPair = $result.Matches.Groups.Captures | Where-Object { $_.Name -eq '0' } | Select-Object -ExpandProperty Value
+	# if we don't have anything, assume there were no email matches, just account names
+	if ($CredPair -ne $null -and $CredPair -ne '') { $AccountPasswordPair = $CredPair }
 
     # Split on the delimiter 3 times in case there's a trailing delimiter at the end of the password    
     $AccountPasswordPair | ForEach-Object { $AccountName, $Password, $Unused = $_.split($Delimeter, 3); 
