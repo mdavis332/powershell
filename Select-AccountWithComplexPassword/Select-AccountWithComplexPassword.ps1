@@ -4,15 +4,15 @@
 # otherwise, return false
 function Test-PasswordComplexity {
     param (
-        [Parameter(Mandatory=$false)][string]$AccountName = "",
-        [Parameter(Mandatory=$true)][string]$Password
+        [Parameter(Mandatory = $false)][string]$AccountName = '',
+        [Parameter(Mandatory = $true)][string]$Password
     )
 
     if ($Password.Length -lt 7) {
         return $false
     }
 
-    if (($Account) -and $Password -match $AccountName) {
+    if (($AccountName) -and ($AccountName -match $Password)) {
         return $false
     }
 
@@ -20,15 +20,15 @@ function Test-PasswordComplexity {
         return $true
     }
 
-    $permittedSpecialChars = [Regex]::Escape('~!@#$%^&*_+=`|(){}[]:;"",.?/') -replace ']','\]'
+    $permittedSpecialChars = [Regex]::Escape('~!@#$%^&*_+=`|(){}[]:;"",.?/') -replace ']', '\]'
     if (($Password -cmatch '[A-Z\p{Lu}]') `
-        + ($Password -cmatch '[a-z\p{Ll}]') `
-        + ($Password -match '\d') `
-        + ($Password -match "[$permittedSpecialChars]") -ge 3 )
-    {
+            + ($Password -cmatch '[a-z\p{Ll}]') `
+            + ($Password -match '\d') `
+            + ($Password -match "[$permittedSpecialChars]") -ge 3 ) {
         return $true
 
-    } else {
+    }
+    else {
         return $false
     }
 }
