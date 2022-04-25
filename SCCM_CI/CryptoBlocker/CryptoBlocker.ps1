@@ -7,6 +7,9 @@ function CryptoBlocker
   $SMTPTo = "Admin@YOURDOMAINNAME"
   $AdminEmail = "Admin@YOURDOMAINNAME"
   
+  # Set manual file extension exclusions
+  $CryptoExtensionsToExclude = "*.one", "*.info", "*.0000", '*.rat', "*.aes", "*.enc", "*.lin", "*.test", "*.dot", "*.xxx", "*.fun", "oor.png", "*restore_fi*.*", "*.backup" #used for OneNote, WinDefender, SxS, BackupExec, Chrome, and AutoDesk files
+  
   # Get Ransomware Known File Types
   $CryptoExtensions = (Invoke-WebRequest -Uri "https://fsrm.experiant.ca/api/v1/get" -UseBasicParsing).content | convertfrom-json | % {$_.filters}
   
@@ -56,17 +59,19 @@ function CryptoBlocker
     # Add Known Extensions To $CryptoExtensions Array
     foreach ($Extension in $CryptoExtensions)
     {
-      If ($Extension -notin $KnownExtensions)
+      if ($Extension -notin $KnownExtensions)
       {
         $CryptoExtensionsUpdate.Add($Extension) | Out-Null
       }
     }
     
-    # Update File Screen
-    Set-FSRMFileGroup -Name CryptoExtensions -IncludePattern $CryptoExtensionsUpdate | Out-Null
+    # Update File Screen if there are updates to be made
+    if ($CryptoExtensionsUpdate.count -gt 0)
+    {
+      Set-FSRMFileGroup -Name CryptoExtensions -IncludePattern $CryptoExtensionsUpdate | Out-Null
+    }
 
     # Add manual excludes
-    $CryptoExtensionsToExclude = "*.one", "*.info", "*.0000", '*.rat', "*.aes", "*.enc", "*.lin", "*.test", "*.dot", "*.xxx", "*.fun", "oor.png", "*restore_fi*.*", "*.backup" #used for OneNote, WinDefender, SxS, BackupExec, Chrome, and AutoDesk files
     Set-FSRMFileGroup -Name CryptoExtensions -ExcludePattern $CryptoExtensionsToExclude | Out-Null
 
   }
